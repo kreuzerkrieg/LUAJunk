@@ -1,0 +1,45 @@
+--[[
+	Lightroom Web Gallery manifest.  This file maps various template files to actual
+	files to be produced for your website.
+	]]
+
+importTags( "lr", "com.adobe.lightroom.default" )
+
+AddPage {
+	template='Armored_Vehicles_RSS.html',
+	filename='Armored_Vehicles.rss',
+}
+
+AddPage {
+	template='Armored_Vehicles_MRSS.html',
+	filename='Armored_Vehicles.mrss',
+}
+
+AddPage {
+	template='ImageSiteMap.html',
+	filename='SiteMap.Panzer.images.xml',
+	filetype='xml',
+}
+
+AddPage {
+	template='SiteMap.html',
+	filename='SiteMap.Panzer.content.xml',
+	filetype='xml',
+}
+
+AddResource {
+	source='resources/css/master.css',
+	destination='CSS/master.css',
+}
+
+AddPhotoPages {
+	template='detail.html',
+	variant='_large',
+	destination="ImgPreview",
+}
+
+AddGridPages {
+	template='grid.html',
+	rows=8,
+	columns=1,
+}

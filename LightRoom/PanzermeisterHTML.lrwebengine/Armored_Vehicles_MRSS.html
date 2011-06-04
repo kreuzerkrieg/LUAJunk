@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom">
+      <channel>
+        <description>Armored Vehicles by Ernest W. Zaslavsky</description>
+        <title>Armored Vehicles by Ernest W. Zaslavsky</title>
+        <link rel="alternate" type="text/html" href="http://www.marine-life-photos.com/">http://www.marine-life-photos.com/</link>
+<%
+--[[ Define some variables to make locating other resources easier
+     firstPage was defined in our manifest.]]
+    local previews = "ImgPreview"
+    local mySize = "thumb"
+%>
+            <% for i=numImages, 1, -1 do %>
+            <% local image = getImage(i) %>
+    <item>
+        <title><%= model.alamydata.title[image.imageID]%></title>
+ <media:description><%= model.alamydata.title[image.imageID]%></media:description>
+        <link>http://www.marine-life-photos.com/Panzermeister/$previews/<%= image.exportFilename %>_large.html</link>
+               <media:thumbnail url="http://www.marine-life-photos.com/Panzermeister/bin/images/thumb/<%= image.exportFilename %>.jpg"/>
+               <media:content url="http://www.marine-life-photos.com/Panzermeister/bin/images/large/<%= image.exportFilename %>.jpg"/>
+     </item>
+<% end %>
+</channel>
+</rss>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+<%
+    for i=1, math.ceil(numImages/8) do
+    local suff = ''
+    if i>1 then
+        suff = '_' .. tostring(i)
+    end
+%>
+<url>
+<loc>http://www.marine-life-photos.com/Marine_Life/index<%=suff%>.html</loc>
+<%
+    local stop_index = 8;
+    if numImages-(i-1)*8 < 8 then
+        stop_index = numImages-(i-1)*8
+    end
+    for j=1, stop_index do
+    local image = getImage((i-1)*8+j)
+%>
+    <% end %>
+<lastmod><%= model.date.today %></lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+<% end %>
+<%
+    for k=1, numImages do
+    local image = getImage(k)
+%>
+<url>
+    <loc>http://www.marine-life-photos.com/Marine_Life/ImgPreview/<%= image.exportFilename %>_large.html</loc>
+    <lastmod><%= model.date.today %></lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+</url>
+<% end %>
+</urlset>

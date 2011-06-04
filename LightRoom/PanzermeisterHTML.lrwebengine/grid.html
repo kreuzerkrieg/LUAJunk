@@ -1,0 +1,111 @@
+<%
+--[[ Define some variables to make locating other resources easier
+     firstPage was defined in our manifest.]]
+
+    local others = "."
+    local previews = "ImgPreview"
+    local theRoot = "."
+    local mySize = "thumb"
+%>
+<% --[[ Include the page header]] %>
+<%@ include file="head.html" %>
+<% --[[ Main grid area ]] %>
+<% --[[ Pagination section ]] %>
+<% if numGridPages > 1 then %>
+<lr:Pagination>
+<table width="100%">
+    <tr>
+            <td align="left"><table width="100%"><tr><td align="left"><lr:CurrentPage>
+              <span class="currentPage">$page</span>
+            </lr:CurrentPage>
+            <lr:OtherPages>
+              <a href="$link">$page</a>
+            </lr:OtherPages></td><td align="right"><lr:PreviousEnabled>
+    	      <a href="$link"><%= LOC "$$$/AgWPG/Templates/HTML/output/Previous=Previous" %></a>
+    		</lr:PreviousEnabled>
+            <lr:PreviousDisabled>
+    	      <%= LOC "$$$/AgWPG/Templates/HTML/output/Previous=Previous" %>
+    		</lr:PreviousDisabled>
+            <lr:NextEnabled>
+    	      <a href="$link"><%= LOC "$$$/AgWPG/Templates/HTML/output/Next=Next" %></a>
+    		</lr:NextEnabled>
+            <lr:NextDisabled>
+    	      <%= LOC "$$$/AgWPG/Templates/HTML/output/Next=Next" %>
+    		</lr:NextDisabled><a href="../index.htm">Home</a></td></tr></table>
+        </td>
+        <td align="right"> </td>
+    </tr>
+</lr:Pagination>
+<% end %>
+        <tr>
+            <td valign="top">
+<lr:ThumbnailGrid>
+	<% --[[ The grid ]] %>
+    <lr:GridPhotoCell>
+        <table cellspacing="2" cellpadding="2" class="picTable" width="100%" onmouseover="this.style.backgroundColor = '#777777'" onmouseout="this.style.backgroundColor = '#666666'">
+            <colgroup>
+                <col width="25%" />
+                <col width="25%" />
+                <col width="50%" />
+            </colgroup>
+            <tr>
+                <td>
+                    <a href="$previews/<%= image.exportFilename %>_large.html">
+                        <img class="pic4Sale" src="$others/bin/images/thumb/<%= image.exportFilename %>.jpg" alt="<%= model.alamydata.title[image.imageID]%>"
+                            title="Click for bigger image" /></a><br />
+                    <a href="<%= model.alamydata.refids[image.imageID]%>">License this image on Alamy.</a>
+                </td>
+                <td valign="top">Title: <%= model.alamydata.title[image.imageID]%></td>
+                <td valign="top" class="Keywords">Keywords:  <%= model.alamydata.keywords[image.imageID]%></td>
+            </tr>
+        </table>
+        <hr />
+    </lr:GridPhotoCell>
+    <lr:GridEmptyCell>
+    </lr:GridEmptyCell>
+    <lr:GridRowEnd>
+    </lr:GridRowEnd>
+</lr:ThumbnailGrid>
+</td>
+<td align="center" valign="top">
+    <script type="text/javascript"><!--
+        google_ad_client = "pub-7829655030899932";
+        /* ArmouredSky */
+        google_ad_slot = "4968100714";
+        google_ad_width = 160;
+        google_ad_height = 600;
+//-->
+    </script>
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
+</td>
+</tr>
+<% --[[ Pagination section ]] %>
+<% if numGridPages > 1 then %>
+<lr:Pagination>
+     <tr>
+            <td align="left"><table width="100%"><tr><td align="left"><lr:CurrentPage>
+              <span class="currentPage">$page</span>
+            </lr:CurrentPage>
+            <lr:OtherPages>
+              <a href="$link">$page</a>
+            </lr:OtherPages></td><td align="right"><lr:PreviousEnabled>
+    	      <a href="$link"><%= LOC "$$$/AgWPG/Templates/HTML/output/Previous=Previous" %></a>
+    		</lr:PreviousEnabled>
+            <lr:PreviousDisabled>
+    	      <%= LOC "$$$/AgWPG/Templates/HTML/output/Previous=Previous" %>
+    		</lr:PreviousDisabled>
+            <lr:NextEnabled>
+    	      <a href="$link"><%= LOC "$$$/AgWPG/Templates/HTML/output/Next=Next" %></a>
+    		</lr:NextEnabled>
+            <lr:NextDisabled>
+    	      <%= LOC "$$$/AgWPG/Templates/HTML/output/Next=Next" %>
+    		</lr:NextDisabled><a href="../index.htm">Home</a></td></tr></table>
+        </td>
+        <td align="right"> </td>
+    </tr>
+</table>
+</lr:Pagination>
+<% end %>
+<% --[[ Include the page footer]] %>
+<%@ include file="foot.html" %>

@@ -1,0 +1,251 @@
+
+local warningFontName, warningFontSize
+if MAC_ENV then
+	warningFontName = LOC "$$$/locale_metric/Mac/Panel/Content/Italic/FontName=MyriadWebPro-Italic"
+	warningFontSize = LOC "$$$/locale_metric/Mac/Panel/SmallBodyText/SmallFontSize=11"
+else
+	warningFontName = LOC "$$$/locale_metric/Win/Panel/Content/Italic/FontName=MyriadWebPro-Italic"
+	warningFontSize = LOC "$$$/locale_metric/Win/Panel/SmallBodyText/SmallFontSize=10"
+end
+
+local warningFont = {
+	name = warningFontName,
+	size = tonumber( warningFontSize ),
+}
+
+	local LrApplication = import 'LrApplication'
+	local LrDate = import 'LrDate'
+
+	local alamy_title = {}
+	local alamy_keywords = {}
+	local alamy_refids = {}
+	local date_taken = {}
+	local locations = {}
+	local countries = {}
+
+	catalog = LrApplication.activeCatalog()
+	today = LrDate.timeToW3CDate(LrDate.currentTime())
+
+	catalog:withReadAccessDo( function()
+		photos = catalog.allPhotos
+		end 
+	)
+
+	for i, photo in ipairs(photos) do
+	    catalog:withReadAccessDo( function()
+	       title = photo:getFormattedMetadata('title')
+		   caption = photo:getFormattedMetadata('caption')
+		   ess_keywords = photo:getFormattedMetadata('keywordTags')
+		   dateTaken = photo:getRawMetadata('dateTimeOriginalISO8601')
+		   IPTCDate = photo:getFormattedMetadata('dateCreated')
+		   ref_ids = photo:getPropertyForPlugin('com.jkeir.lightroom.alamyupload', 'MediaURL')
+		   location = photo:getFormattedMetadata('location')
+		   country = photo:getFormattedMetadata('country')
+		   uid = photo.uuid
+	    end 
+		)
+		local keywords =""
+
+		if location ~= nil then 
+			locations[uid] = location
+		else
+			locations[uid] = "Israel"
+		end
+
+		if country ~= nil then 
+			countries[uid] = country
+		else
+			countries[uid] = "Israel"
+		end
+
+		if ess_keywords ~= nil then 
+			keywords = ess_keywords
+		end
+		alamy_keywords[uid] = keywords
+		if caption ~= nil and caption ~= "" then
+			alamy_title[uid] = caption
+		elseif title ~= nil and title ~= "" then
+	    	alamy_title[uid] = title
+		else
+			alamy_title[uid] = "Untitled Picture"
+		end
+		alamy_refids[uid] = ref_ids
+		if dateTaken ~= nil then
+			date_taken[uid] = dateTaken
+		else
+			date_taken[uid] = IPTCDate
+		end
+	end -- for/do
+
+local useMultiBind = false
+return {
+	LrSdkVersion = 2.0,
+	LrSdkMinimumVersion = 2.0, -- minimum SDK version required by this plugin
+
+	title = LOC "$$$/AgWPG/Templates/HTML/Title=Marine Life Gallery",
+	id = "com.adobe.wpg.templates.Kreuzerkrieg",
+	galleryType = "lua",
+	maximumGallerySize = 50000,
+	aboutBoxFile = "about.html",
+	supportsLiveUpdate = true,
+
+	model = {
+		["photoSizes.large.cropMode"] = "normal",
+		["photoSizes.large.height"] = useMultiBind and 600
+			or function() return photoSizes.large.width end,
+		["photoSizes.large.maxHeight"] = 2701,
+		["photoSizes.large.maxWidth"] = 2701,
+		["photoSizes.large.metadataExportMode"] = useMultiBind and "copyright"
+			or function() return photoSizes.thumb.metadataExportMode end,
+		["photoSizes.large.width"] = 600,
+		["photoSizes.thumb.cropMode"] = "normal",
+		["photoSizes.thumb.height"] = 200,
+		["photoSizes.thumb.metadataExportMode"] = "copyright",
+		["photoSizes.thumb.width"] = 200,
+		["photoSizes.tracking"] = false,
+		["lightroomApplication.identityPlateExport"] = "(main)",
+		["lightroomApplication.jpegQuality"] = 70,
+		["lightroomApplication.sizeBeingViewed"] = "thumb",
+		["lightroomApplication.useWatermark"] = true,
+		["lightroomApplication.outputSharpeningOn"] = true,
+		["lightroomApplication.outputSharpening"] = 2,
+		["metadata.additionalKeywords.value"] = LOC "$$$/AgWPG/Templates/HTML/additionalKeywords=Red Sea, Eilat, Israel, Diving, SCUBA, Coral Reef, Marine Life",
+		["metadata.descriptionTag.value"] = LOC "$$$/AgWPG/Templates/HTML/descriptionTag=Stock photos of Red Sea inhabitants",
+		["metadata.siteTitle.value"] = LOC "$$$/AgWPG/Templates/HTML/DefaultValues/properties/SiteTitle=Stock photos of Red Sea marine life",
+		["metadata.homePage.value"] = {
+			value = "Kreuzerkrieg.html",
+			metadata = { [ "ag:dataType" ] = "webLink" },
+		},
+		["alamydata.title"] = alamy_title,
+		["alamydata.keywords"] = alamy_keywords,
+		["alamydata.refids"] = alamy_refids,
+		["date.today"] = today,
+		["date.taken"] = date_taken,
+		["locations"] = locations,
+		["countries"] = countries,
+	},
+	views = function( controller, f )
+		local LrView = import "LrView"
+		local bind = LrView.bind
+		-- doesn't work with undo yet
+		local multibind = f.multibind
+
+		return { 
+
+			labels = f:panel_content {
+				bindToObject = controller,
+				f:subdivided_sections {
+					f:labeled_text_input  {
+						title = LOC "$$$/AgWPG/Templates/HTML/Panel/Labels/SiteTitle=Site Title",
+						value = bind "metadata.siteTitle.value",
+						max_length = 500,
+					},
+					f:labeled_text_input  {
+						title = LOC "$$$/AgWPG/Templates/HTML/additionalKeywords=Additional HTML Keywords",
+						value = bind "metadata.additionalKeywords.value",
+						wraps = false,
+					},
+					f:labeled_text_input  {
+						title = LOC "$$$/AgWPG/Templates/HTML/descriptionTag=HTML Description Tag",
+						value = bind "metadata.descriptionTag.value",
+						wraps = false,
+					},
+				},
+			},
+			appearanceConfiguration = f:panel_content {
+				bindToObject = controller,
+				f:subdivided_sections {
+					f:header_section {
+						f:static_text  {
+							title = LOC "$$$/AgWPG/Templates/HTML/Panel/Labels/ImagePages=Image Pages",
+							place_vertical = 0.5,
+								-- SPAM this shouldn't be specified here
+						},
+						f:warning_icon {
+							visibility = {
+								key = "lightroomApplication.sizeBeingViewed",
+								whenNotEqual = "large",
+							},
+							tooltip = LOC "$$$/AgWPG/Templates/HTML/Panel/WarningIcons/RequiresLarge=Changes to Image Pages settings aren't currently visible.  Click in the image grid to change to an image page.",
+						},
+					},
+					f:slider_content_column {
+						f:slider_row {
+							title = LOC "$$$/AgWPG/Templates/HTML/Panel/Labels/MaximumImageSizeLabel/LargePreview=Size",
+							value = useMultiBind and multibind {
+								"photoSizes.large.width",
+								"photoSizes.large.height",
+								"appearance.liveUpdateImageSize.maxSize",
+							}
+							or bind "photoSizes.large.width",
+							tracking = bind "nonCSS.tracking",
+								-- SPAM, couldn't we find a way to remove this
+							unit = LOC "$$$/AgWPG/Templates/HTML/Panel/Labels/ImageSizeUnit=px",
+							max = 2071,
+							min = 300,
+							width_in_digits = 4,
+							precision = 0,
+						},
+					},
+				},
+			},
+			outputSettings = f:panel_content {
+				bindToObject = controller,
+				f:subdivided_sections {
+					f:header_section_label {
+						title = LOC "$$$/AgWPG/Templates/HTML/Panel/Labels/ImageHandling=Large Images",
+					},
+					f:slider_content_column {
+						f:slider_row {
+							title = LOC "$$$/AgWPG/Templates/HTML/Panel/Labels/MaximumImageSizeLabel/JPEGQualityLabel=Quality",
+							value = bind "lightroomApplication.jpegQuality",
+							tracking = bind "lightroomApplication.jpegQuality.tracking",
+							tracking_value = "qualityTracking",
+							unit = "",
+							max = 100,
+							min = 0,
+							width_in_digits = 4,
+							precision = 0,
+						},
+						f:metadataModeControl {
+							value = useMultiBind and multibind {
+								"photoSizes.thumb.metadataExportMode",
+								"photoSizes.large.metadataExportMode",
+							}
+							or bind "photoSizes.thumb.metadataExportMode",
+						},
+					},
+					f:header_section {
+						f:checkbox_row {
+							title = LOC "$$$/AgWPG/Templates/HTML/Panel/Checkbox/UseWatermark=Add Copyright Watermark",
+							value = bind "lightroomApplication.useWatermark",
+						},
+					},
+				},
+				f:subdivided_sections {
+					f:header_section {
+						ui.popup_row {
+							title = LOC "$$$/AgWPG/Templates/HTML/Panel/PopupMenu/Sharpening=Sharpening :", 
+							checkbox = {
+								bindingValue = "lightroomApplication.outputSharpeningOn",
+							},
+							bindingValue = "lightroomApplication.outputSharpening",
+							items = { { title = LOC( "$$$/AgWPG/Templates/HTML/PopupMenu/SharpeningLow=Low" ), value = 1 }, 
+										{ title = LOC( "$$$/AgWPG/Templates/HTML/PopupMenu/SharpeningStandard=Standard" ), value = 2 }, 
+										{ title = LOC( "$$$/AgWPG/Templates/HTML/PopupMenu/SharpeningHigh=High" ), value = 3 } },
+							bindingEnabled = "lightroomApplication.outputSharpeningOn",
+						},
+					},
+					f:content_section {
+						margin_left = 30,
+						f:static_text {
+							fill_horizontal = 1,
+							title = LOC "$$$/AgWPG/Templates/HTML/SharpeningMessage=Sharpening is applied on output.",
+							font = warningFont,
+						},
+					},
+				},
+			},
+		}
+	end,
+}

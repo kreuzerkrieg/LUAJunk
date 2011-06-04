@@ -1,0 +1,75 @@
+BODY
+{
+    background-color: #4C4C4C;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    color: #B3B3B3;
+}
+.picTable
+{
+    background-color: #666666;
+    font-family: Verdana;
+    font-size: small;
+    font-style: normal;
+    border: thin #C0C0C0 groove;
+}
+.currentPage
+{
+    font-family: Verdana;
+    font-size: small;
+    font-style: normal;
+    color: #B3B3B3;
+    border:1px solid #7F7F7F;
+    padding:2px 2px 2px 2px;
+}
+.Keywords
+{
+    font-family: Verdana;
+    font-size: small;
+    font-style: normal;
+    text-transform: capitalize;
+}
+TABLE#header
+{
+    font-family: Cambria;
+    font-size: xx-large;
+    font-style: oblique;
+}
+a
+{
+   font-family:Verdana;
+    font-size: small;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    color: #B3B3B3;
+}
+.pic4Sale
+{
+    border: thin #C0C0C0 groove;
+}
+.copyright
+{
+    font-family: Verdana;
+    font-size: x-small;
+    font-style: oblique;
+    font-variant: small-caps;
+    font-weight: lighter;
+    color: #B3B3B3;
+}
+.Mosaic
+{
+    display: inline-block;
+}
+.MosaicTable
+{
+    height: 220px;
+    width: 220px;
+    vertical-align: middle;
+    text-align: center;
+    background-color: #666666;
+    border: thin #C0C0C0 groove;
+}

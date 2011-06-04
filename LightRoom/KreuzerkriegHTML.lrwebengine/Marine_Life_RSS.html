@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <id>http://www.marine-life-photos.com/</id>
+    <title>Marine Life by Ernest W. Zaslavsky</title>
+  <link rel="self" href="http://www.marine-life-photos.com/Marine_Life/Marine_Life.rss" />
+  <link rel="alternate" type="text/html" href="http://www.marine-life-photos.com/"/>
+<updated><%= model.date.today %></updated>
+<%
+--[[ Define some variables to make locating other resources easier
+     firstPage was defined in our manifest.]]
+    local previews = "ImgPreview"
+    local mySize = "thumb"
+%>
+            <% for i=numImages, 1, -1  do %>
+            <% local image = getImage(i) %>
+    <entry>
+    <id>http://www.marine-life-photos.com/Marine_Life/$previews/<%= image.exportFilename %>_large.html</id>
+        <title><%= model.alamydata.title[image.imageID]%></title>
+        <link rel="alternate" type="text/html" href="http://www.marine-life-photos.com/Marine_Life/$previews/<%= image.exportFilename %>_large.html"/>
+        <published><%= model.date.taken[image.imageID]%></published>
+        <updated><%= model.date.taken[image.imageID]%></updated>
+        <dc:date.Taken><%= model.date.taken[image.imageID]%></dc:date.Taken>
+        <author>
+            <name>Ernest W. Zaslavsky</name>
+            <uri>http://www.marine-life-photos.com/</uri>
+        </author>
+         <content type="html">&lt;a href=&quot;http://www.marine-life-photos.com/Marine_Life/$previews/<%= image.exportFilename %>_large.html&quot; title=&quot;<%= model.alamydata.title[image.imageID]%>&quot;&gt;&lt;img src=&quot;http://www.marine-life-photos.com/Marine_Life/bin/images/thumb/<%= image.exportFilename %>.jpg&quot; alt=&quot;<%= model.alamydata.title[image.imageID]%>&quot; /&gt;&lt;/a&gt;&lt;br/&gt;&lt;a href=&quot;<%= model.alamydata.refids[image.imageID]%>&quot;&gt;License this image on Alamy.&lt;/a&gt;</content>
+    </entry>
+<% end %>
+</feed>
